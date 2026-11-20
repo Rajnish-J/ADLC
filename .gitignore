@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.vsix
+.DS_Store
+*.log
+.vscode-test
+out
+orka
+*.tsbuildinfo
+.next/
+next-env.d.ts
+.env
+.env.*
+!.env.example
+# Monaco is copied from node_modules at dev/build time (apps/web/scripts/copy-monaco.mjs).
+apps/web/public/monaco/

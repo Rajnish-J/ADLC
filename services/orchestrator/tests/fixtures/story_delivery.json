@@ -1,0 +1,35 @@
+{
+  "specVersion": 1,
+  "name": "Story delivery",
+  "description": "The stages every story goes through, each agent step bound to a built-in agent. Duplicate it to map your own agents.",
+  "pattern": "sequential",
+  "nodes": [
+    { "id": "story-picked-up", "kind": "trigger", "label": "Story picked up", "data": { "triggerType": "manual" } },
+    { "id": "plan", "kind": "agent", "label": "Plan", "data": { "agentId": "planner", "agentName": "Planner" } },
+    {
+      "id": "approve-plan",
+      "kind": "approval",
+      "label": "Approve plan",
+      "data": { "question": "Does the plan cover every acceptance criterion?" }
+    },
+    { "id": "implement", "kind": "agent", "label": "Implement", "data": { "agentId": "implementer", "agentName": "Implementer" } },
+    { "id": "test", "kind": "agent", "label": "Test", "data": { "agentId": "tester", "agentName": "Tester" } },
+    { "id": "quality-gate", "kind": "gate", "label": "Quality gate", "data": {} },
+    { "id": "review", "kind": "agent", "label": "Review", "data": { "agentId": "reviewer", "agentName": "Reviewer" } },
+    { "id": "pr-description", "kind": "agent", "label": "PR description", "data": { "agentId": "pr-author", "agentName": "PR Author" } },
+    { "id": "merge-approval", "kind": "approval", "label": "Merge approval", "data": { "question": "Ready to merge?" } },
+    { "id": "done", "kind": "end", "label": "Done", "data": {} }
+  ],
+  "edges": [
+    { "source": "story-picked-up", "target": "plan" },
+    { "source": "plan", "target": "approve-plan" },
+    { "source": "approve-plan", "target": "implement" },
+    { "source": "implement", "target": "test" },
+    { "source": "test", "target": "quality-gate" },
+    { "source": "quality-gate", "target": "review" },
+    { "source": "review", "target": "pr-description" },
+    { "source": "pr-description", "target": "merge-approval" },
+    { "source": "merge-approval", "target": "done" }
+  ],
+  "budget": { "maxSteps": 50, "timeoutMs": 300000, "maxTokens": 0 }
+}

@@ -1,0 +1,101 @@
+#
+# P4.0 spike workflow — C# flavor (kind: Workflow + nested trigger.actions[]).
+#
+# Flow:  Designer agent  ->  HTTP gate (our TS endpoint)  ->  [fail? halt]  ->  HITL approval  ->  Implementer agent
+#
+# Proves: (1) HttpRequestAction calls our TS gate and ConditionGroup halts on fail;
+#         (2) Question pauses for human approval and resumes;
+#         (3) two InvokeAzureAgent steps hand off via System.LastMessage.
+#
+# Replace <GATE_URL> with the public URL of gate-endpoint/server.mjs (e.g. https://<tunnel>/gate).
+# Register two prompt agents named "DesignerAgent" and "ImplementerAgent" in the Foundry project first.
+#
+kind: Workflow
+trigger:
+  kind: OnConversationStart
+  id: sdlc_gate_hitl_spike
+  actions:
+    # 1) First SDLC agent (design step). Its output becomes the artifact we gate.
+    - kind: InvokeAzureAgent
+      id: invoke_designer
+      displayName: Run Designer agent
+      agent:
+        name: DesignerAgent
+      conversationId: =System.ConversationId
+      input:
+        messages: =System.LastMessage
+      output:
+        responseObject: Local.DesignerResult
+        messages: Local.DesignerMessages
+        autoSend: true
+
+    # 2) In-run governance gate — call our TypeScript endpoint over HTTP.
+    #    The endpoint runs the Phase-3 evaluator + decideGate and returns {pass, reason, perEvaluator}.
+    - kind: HttpRequestAction
+      id: call_gate
+      displayName: SDLC eval gate (TS endpoint)
+      method: POST
+      url: <GATE_URL>
+      headers:
+        Content-Type: application/json
+      body:
+        kind: json
+        value:
+          sdlcStep: design
+          output: =Local.DesignerResult
+      response: Local.GateResult
+      requestTimeoutInMilliseconds: 60000
+
+    # 3) Enforce the gate. If it failed, tell the user and end the workflow (halt-on-fail).
+    - kind: ConditionGroup
+      id: enforce_gate
+      displayName: Block on gate failure
+      conditions:
+        - condition: =Not(Local.GateResult.pass)
+          id: gate_failed
+          actions:
+            - kind: SendActivity
+              activity:
+                text: =Concat("Gate BLOCKED the run: ", Local.GateResult.reason)
+            - kind: EndWorkflow
+              id: halt_on_gate_fail
+      # elseActions omitted — fall through to the approval step on pass.
+
+    # 4) Human-in-the-loop approval before the next agent acts. This is the pause/resume probe.
+    - kind: Question
+      id: ask_approval
+      displayName: Approve proceeding to implementation?
+      question:
+        text: =Concat("Design passed the gate (", Local.GateResult.reason, "). Approve implementation? (yes/no)")
+      variable: Local.Approval
+      default: "no"
+
+    - kind: ConditionGroup
+      id: enforce_approval
+      displayName: Stop if not approved
+      conditions:
+        - condition: =Local.Approval <> "yes"
+          id: not_approved
+          actions:
+            - kind: SendActivity
+              activity:
+                text: "Implementation not approved — ending workflow."
+            - kind: EndWorkflow
+              id: halt_on_reject
+
+    # 5) Second SDLC agent (implement step) — only reached on gate-pass + approval.
+    - kind: InvokeAzureAgent
+      id: invoke_implementer
+      displayName: Run Implementer agent
+      agent:
+        name: ImplementerAgent
+      conversationId: =System.ConversationId
+      input:
+        messages: =Local.DesignerMessages
+      output:
+        responseObject: Local.ImplementerResult
+        autoSend: true
+
+    - kind: EndWorkflow
+      id: done
+      displayName: Workflow complete

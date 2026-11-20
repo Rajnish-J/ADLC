@@ -1,0 +1,21 @@
+{
+  "name": "@sdlc/contracts",
+  "version": "0.1.0",
+  "private": true,
+  "description": "The SDLC platform API contract: request/response schemas, roles and permissions, story workflow rules and live-event types. Shared by the API, the web app and the VS Code extension.",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "emit:rbac": "tsc -b && node scripts/emit-rbac.mjs"
+  },
+  "dependencies": {
+    "@sdlc/core": "*",
+    "zod": "^3.25.76"
+  }
+}

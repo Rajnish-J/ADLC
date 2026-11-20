@@ -1,0 +1,38 @@
+# Agent quality rules — used by the SDLC Governance extension to decide whether a
+# discovered agent / skill / subagent is "good enough to use" and to suggest
+# improvements. Suggestions appear under each agent in the Discovered Agents tree.
+#
+# This file is OPTIONAL. Delete it to fall back to the built-in defaults shown
+# below. Edit the thresholds and the `messages` text freely — the file is re-read
+# on every discovery pass (saving it triggers a re-scan).
+
+# Suggest a richer description when it is shorter than this many characters.
+# Set to 0 to disable this check.
+minDescriptionLength: 40
+
+# Suggest naming trigger phrases (e.g. "Triggers on …" or quoted examples) when
+# the description gives no cue about when to use the agent.
+requireTriggerPhrases: true
+
+# Suggest declaring tools when an agent lists none.
+requireToolsDeclared: false
+
+# Suggest a more substantial system prompt / body when shorter than this many
+# characters. Set to 0 to disable.
+minInstructionsLength: 80
+
+# Suggest pinning a model when none is declared.
+requireModel: false
+
+# Surface a review reminder when a skill bundles executable scripts.
+flagBundledScripts: true
+
+# Override the suggestion text for any rule (the key is the rule id above).
+# Anything you omit keeps its default wording.
+messages:
+  minDescriptionLength: "Add a richer description with trigger phrases so this agent is discoverable."
+  requireTriggerPhrases: 'Describe when to use this agent (e.g. "Triggers on …").'
+  minInstructionsLength: "Flesh out the system prompt — the current body is too thin to be reliable."
+  requireToolsDeclared: "Declare the tools this agent needs."
+  requireModel: "Pin a model so behaviour is reproducible."
+  flagBundledScripts: "Bundles executable scripts — review them before trusting this agent."

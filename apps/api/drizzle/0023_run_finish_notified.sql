@@ -1,0 +1,1 @@
+ALTER TABLE "runs" ADD COLUMN "finish_notified_at" timestamp with time zone;

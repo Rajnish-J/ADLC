@@ -1,0 +1,143 @@
+# Azure Pipelines — build, gate, package, and publish the SDLC Governance extension
+# to a PRIVATE Azure DevOps Artifacts feed. This extension is private/UNLICENSED and
+# must never be published to the public VS Code Marketplace.
+#
+# One-time setup (in the ADO web UI — not scripted):
+#   1. Artifacts > create a feed named `sdlc-extensions`, scoped to this project/org.
+#      Permissions: org members = Reader, build service identity = Contributor.
+#   2. Run this pipeline on a Windows agent so the @vscode/test-electron host has a
+#      real display (no Linux xvfb needed).
+#   3. Pipelines > Environments > create an Environment named `sdlc-extensions-feed` and
+#      add an Approvals check with the maintainers as approvers. The Publish stage is a
+#      `deployment` job targeting this Environment, so the push waits for approval.
+#
+# Publishing only happens on `main` and on `v*` tags. PRs and feature branches run the
+# full quality gate but do not publish.
+
+trigger:
+  branches:
+    include:
+      - main
+  tags:
+    include:
+      - v*
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
+      - feat/*
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  # Name of the private ADO Artifacts feed created in the one-time setup above.
+  feedName: sdlc-extensions
+  nodeVersion: '20.x'
+  # Location for the npm cache restored by the Cache@2 task below.
+  npm_config_cache: $(Pipeline.Workspace)/.npm
+
+stages:
+  - stage: Build
+    displayName: Gate, build, and package
+    jobs:
+      - job: build
+        displayName: Build VSIX
+        steps:
+          - task: NodeTool@0
+            displayName: Use Node $(nodeVersion)
+            inputs:
+              versionSpec: $(nodeVersion)
+
+          # Restore the npm cache keyed on the lockfile to speed up `npm ci`.
+          - task: Cache@2
+            displayName: Cache npm packages
+            inputs:
+              key: 'npm | "$(Agent.OS)" | package-lock.json'
+              restoreKeys: |
+                npm | "$(Agent.OS)"
+              path: $(npm_config_cache)
+
+          - script: npm ci
+            displayName: Install dependencies (npm ci)
+
+          # --- Quality gate (fail-closed): a failure here stops the build ---
+          - script: npm run typecheck
+            displayName: 'Gate: typecheck'
+
+          - script: npm run lint
+            displayName: 'Gate: lint'
+
+          - script: npm test
+            displayName: 'Gate: tests (Electron host)'
+
+          # --- Package ---
+          - script: npm run build
+            displayName: Build production bundle
+
+          - script: npm run package
+            displayName: Package VSIX (vsce package --no-dependencies)
+
+          # Read version out of the extension's package.json so artifact/package names stay in sync.
+          # (Root scripts delegate to the apps/extension workspace, so the gate steps above run from the root.)
+          - task: PowerShell@2
+            displayName: Resolve extension version
+            inputs:
+              targetType: inline
+              script: |
+                $pkg = Get-Content -Raw apps/extension/package.json | ConvertFrom-Json
+                Write-Host "##vso[task.setvariable variable=extVersion;isOutput=true]$($pkg.version)"
+                Write-Host "Extension version: $($pkg.version)"
+            name: ver
+
+          - task: CopyFiles@2
+            displayName: Stage VSIX for artifact
+            inputs:
+              sourceFolder: apps/extension
+              contents: '*.vsix'
+              targetFolder: $(Build.ArtifactStagingDirectory)
+
+          - task: PublishPipelineArtifact@1
+            displayName: Publish VSIX as pipeline artifact
+            inputs:
+              targetPath: $(Build.ArtifactStagingDirectory)
+              artifact: vsix
+
+  - stage: Publish
+    displayName: Publish to private feed
+    dependsOn: Build
+    # Publish only on `main` or a `v*` tag. Checked inline (no intermediate variable) to
+    # avoid Boolean-to-string coercion surprises.
+    condition: >-
+      and(succeeded(),
+          or(eq(variables['Build.SourceBranch'], 'refs/heads/main'),
+             startsWith(variables['Build.SourceBranch'], 'refs/tags/v')))
+    jobs:
+      # A `deployment` job targets an ADO Environment, which is where the manual-approval
+      # check is configured (Synergech policy: confirm before deploying). Create the
+      # `sdlc-extensions-feed` Environment in the ADO web UI and add approvers there.
+      - deployment: publish
+        displayName: Push Universal Package
+        environment: sdlc-extensions-feed
+        variables:
+          # Pull the version computed in the Build stage.
+          extVersion: $[stageDependencies.Build.build.outputs['ver.extVersion']]
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - download: current
+                  artifact: vsix
+
+                - task: UniversalPackages@0
+                  displayName: Publish sdlc-governance-extension to $(feedName)
+                  inputs:
+                    command: publish
+                    publishDirectory: $(Pipeline.Workspace)/vsix
+                    vstsFeedPublish: $(feedName)
+                    vstsFeedPackagePublish: sdlc-governance-extension
+                    versionOption: custom
+                    versionPublish: $(extVersion)
+                    packagePublishDescription: 'SDLC Agent Governance VSIX (internal-only build)'

@@ -1,0 +1,47 @@
+# Local development services for the SDLC platform. Not for production: the target there is Azure Database
+# for PostgreSQL (Flexible Server). Ports bind to 127.0.0.1 so the dev database is never reachable from the
+# network. Credentials come from .env (see .env.example); the defaults below are for local use only.
+name: sdlc-platform
+
+services:
+  postgres:
+    # Postgres 16 with pgvector preinstalled (project/story memory embeddings use it in a later phase).
+    image: pgvector/pgvector:0.8.0-pg16
+    container_name: sdlc-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-sdlc}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-sdlc_dev_password}
+      POSTGRES_DB: ${POSTGRES_DB:-sdlc}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - sdlc-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  # The Python orchestrator (catalog + platform-driven runs). Opt-in: `docker compose --profile full up -d`.
+  # For day-to-day development run it on the host instead: `npm run dev:orchestrator`.
+  orchestrator:
+    profiles: ["full"]
+    build: ./services/orchestrator
+    container_name: sdlc-orchestrator
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-sdlc}:${POSTGRES_PASSWORD:-sdlc_dev_password}@postgres:5432/${POSTGRES_DB:-sdlc}
+      ORCHESTRATOR_TOKEN: ${ORCHESTRATOR_TOKEN:-dev-orchestrator-token}
+      # The gateway runs on the host in development.
+      API_URL: ${ORCHESTRATOR_API_URL:-http://host.docker.internal:4000}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "127.0.0.1:4100:4100"
+
+volumes:
+  sdlc-pgdata:

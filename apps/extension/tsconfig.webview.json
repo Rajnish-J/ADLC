@@ -1,0 +1,24 @@
+{
+  // Type-checks the Phase-5 canvas webview UI (browser + React + JSX), kept
+  // separate from the Node extension config because it needs the DOM lib and
+  // react-jsx. esbuild does the actual bundling; this only enforces strictness.
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "jsx": "react-jsx",
+    "noEmit": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src/webview/ui", "src/webview/story", "src/webview/chat"],
+  "exclude": ["node_modules", "dist"]
+}

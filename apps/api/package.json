@@ -1,0 +1,46 @@
+{
+  "name": "@sdlc/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SDLC platform backend: projects, members, user stories, agent catalog, workflows and audit — one API for the web app and the VS Code extension.",
+  "license": "UNLICENSED",
+  "scripts": {
+    "build:packages": "tsc -b ../../packages/core ../../packages/contracts",
+    "predev": "npm run build:packages",
+    "dev": "tsx watch src/server.ts",
+    "prestart": "npm run build:packages",
+    "start": "tsx src/server.ts",
+    "pretypecheck": "npm run build:packages",
+    "typecheck": "tsc --noEmit",
+    "pretest": "npm run build:packages",
+    "test": "tsx --test \"src/**/*.test.ts\"",
+    "db:generate": "drizzle-kit generate",
+    "predb:migrate": "npm run build:packages",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "predb:seed": "npm run build:packages",
+    "db:seed": "tsx src/db/seed.ts"
+  },
+  "dependencies": {
+    "@ai-sdk/azure": "^4.0.126",
+    "@sdlc/contracts": "*",
+    "@sdlc/core": "*",
+    "ai": "^7.0.173",
+    "drizzle-orm": "^0.45.4",
+    "fastify": "^5.12.0",
+    "ignore": "^7.0.6",
+    "jose": "^6.2.17",
+    "js-yaml": "^4.2.0",
+    "pg": "^8.23.0",
+    "picomatch": "^4.0.7",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^20.14.0",
+    "@types/pg": "^8.23.0",
+    "@types/picomatch": "^4.0.3",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.23.0",
+    "typescript": "^5.4.5"
+  }
+}

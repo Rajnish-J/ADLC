@@ -1,0 +1,26 @@
+{
+  "name": "@sdlc/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "VS Code-free model shared by the extension, the API and the web app: the WorkflowSpec, run types, SDLC steps, the default workflows, the canvas layout, and (via @sdlc/core/discovery) agent and skill discovery.",
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "discovery",
+    "agents"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "typecheck": "tsc -b",
+    "test": "tsx --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^1.1.4",
+    "js-yaml": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9"
+  }
+}

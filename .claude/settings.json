@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs cat:*)",
+      "Bash(npx tsx:*)",
+      "Bash(git log *)",
+      "Read(//c/Users/RajnishJ/Downloads/Ofc/ Projects/claude-code-analytics/**)",
+      "Bash(git stash *)",
+      "Bash(git pull *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npx drizzle-kit *)",
+      "Bash(node -e \"const a = require\\('./node_modules/@base-ui/react/accordion'\\); console.log\\(typeof a\\)\")",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/skills)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000/skills/framework/nextjs)",
+      "Bash(node -e \"const pkg = require\\('./node_modules/lucide-react/package.json'\\); console.log\\(pkg.version\\)\")",
+      "Bash(awk '{print $NF}')",
+      "Bash(grep -v \"^\\\\.$\")",
+      "Bash(grep -v \"^\\\\.\\\\.$\")",
+      "Read(//c/Users/RajnishJ/Downloads/**)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\RajnishJ\\Downloads\\Ofc Projects\\claude-code-analytics\\src\\app\\(app)\\projects",
+      "c:\\Users\\RajnishJ\\Downloads\\Ofc Projects\\claude-code-analytics\\src\\app\\(app)\\skills\\framework",
+      "c:\\Users\\RajnishJ\\Downloads\\Ofc Projects\\claude-code-analytics\\src\\app\\api\\frameworks\\[slug]",
+      "c:\\Users\\RajnishJ\\Downloads\\Ofc Projects\\claude-code-analytics\\.claude",
+      "c:\\Users\\RajnishJ\\Downloads\\Ofc Projects\\claude-code-analytics\\src\\app\\api\\members"
+    ]
+  }
+}

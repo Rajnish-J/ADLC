@@ -1,0 +1,40 @@
+{
+  "name": "sdlc-platform",
+  "private": true,
+  "description": "SDLC agent platform — VS Code extension, backend API and web app (npm workspaces).",
+  "license": "UNLICENSED",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "overrides": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0"
+  },
+  "scripts": {
+    "build": "npm run build -w sdlc-governance-extension",
+    "watch": "npm run watch -w sdlc-governance-extension",
+    "dev": "npm run dev -w sdlc-governance-extension",
+    "typecheck": "npm run typecheck -w sdlc-governance-extension",
+    "lint": "npm run lint -w sdlc-governance-extension",
+    "test": "npm test -w sdlc-governance-extension",
+    "package": "npm run package -w sdlc-governance-extension",
+    "dev:api": "npm run dev -w @sdlc/api",
+    "dev:web": "npm run dev -w @sdlc/web",
+    "dev:orchestrator": "uv run --directory services/orchestrator uvicorn app.main:app --reload --host 127.0.0.1 --port 4100",
+    "start:orchestrator": "uv run --directory services/orchestrator python -m app.serve",
+    "test:orchestrator": "uv run --directory services/orchestrator pytest -q",
+    "check:orchestrator": "cd services/orchestrator && uv run ruff check . && uv run ruff format --check . && uv run mypy app",
+    "db:migrate": "npm run db:migrate -w @sdlc/api",
+    "db:seed": "npm run db:seed -w @sdlc/api",
+    "db:up": "docker compose up -d --wait postgres",
+    "db:down": "docker compose down",
+    "db:psql": "docker compose exec postgres psql -U sdlc -d sdlc",
+    "db:logs": "docker compose logs -f postgres"
+  }
+}

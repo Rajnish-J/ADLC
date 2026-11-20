@@ -1,0 +1,17 @@
+// Story and project memory, imported by containers as `* as M`.
+
+export type { MemoryItem, MemoryKind, MemoryStatus } from '@sdlc/contracts'
+export { useProjectMemory, useStoryMemory } from '@/hooks/memory/useMemory'
+export { default as AddMemoryDialog } from '@/components/memory/AddMemoryDialog'
+export { default as MemoryItemCard } from '@/components/memory/MemoryItemCard'
+export { default as ProjectKnowledgeCard } from '@/components/memory/ProjectKnowledgeCard'
+export { default as StoryMemoryPanel } from '@/components/memory/StoryMemoryPanel'
+export { KIND_META, WRITABLE_KINDS } from '@/components/memory/memory-meta'
+export type { ProjectProfile, ProjectProfileState } from '@sdlc/contracts'
+export { useProjectProfile } from '@/hooks/memory/useProjectProfile'
+export { default as ProfileStatusBanner } from '@/components/memory/profile/ProfileStatusBanner'
+export { default as ProfileProposalCard } from '@/components/memory/profile/ProfileProposalCard'
+export { default as GenerateProfileButton } from '@/components/memory/profile/GenerateProfileButton'
+export { default as MemoryTable } from '@/components/memory/MemoryTable'
+export { default as MemoryDetailSheet } from '@/components/memory/MemoryDetailSheet'
+export { useMemoryActions } from '@/components/memory/MemoryActions'

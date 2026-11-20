@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "outDir": "dist",
+    "rootDir": "src",
+    "sourceMap": true,
+    "strict": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "forceConsistentCasingInFileNames": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true
+  },
+  "include": ["src"],
+  // src/webview/ui is the browser React bundle — type-checked separately by
+  // tsconfig.webview.json (needs the DOM lib + react-jsx). Host-side webview
+  // files (workflowCanvasPanel.ts, messages.ts) stay under this Node config.
+  "exclude": ["node_modules", "dist", "src/webview/ui", "src/webview/story", "src/webview/chat"]
+}

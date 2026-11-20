@@ -1,0 +1,5 @@
+{
+  "private": true,
+  "main": "../dist/discovery/index.js",
+  "types": "../dist/discovery/index.d.ts"
+}

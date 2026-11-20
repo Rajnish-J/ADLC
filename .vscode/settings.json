@@ -1,0 +1,6 @@
+{
+  // Judge model for AI-assisted evaluators (intent_resolution, coherence, …).
+  // Must match a chat deployment that exists in your Foundry project.
+  // synfra-agent-demo / proj-default has "gpt-4o" deployed.
+  "sdlcGovernance.eval.judgeDeployment": "gpt-4o"
+}

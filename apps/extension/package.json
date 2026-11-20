@@ -1,0 +1,1464 @@
+{
+  "name": "sdlc-governance-extension",
+  "displayName": "SDLC Agent Governance",
+  "description": "Governs AI agents across the SDLC — discovery, evaluation gates, and orchestration over Azure AI Foundry.",
+  "version": "0.1.1",
+  "publisher": "synergech",
+  "private": true,
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://dev.azure.com/synergech/Synergech%20Product%20Hub/_git/SDLC-extension-tool"
+  },
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "extensionPack": [
+    "anthropic.claude-code",
+    "openai.chatgpt"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished",
+    "onUri"
+  ],
+  "contributes": {
+    "chatParticipants": [
+      {
+        "id": "sdlc-governance.workflow",
+        "name": "sdlc",
+        "fullName": "SDLC Workflow",
+        "description": "Run a governed SDLC workflow — fetch your assigned work items, pick one, and let the agents complete it.",
+        "isSticky": true
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "sdlcGovernance",
+          "title": "SDLC Governance",
+          "icon": "media/governance.svg"
+        }
+      ]
+    },
+    "views": {
+      "sdlcGovernance": [
+        {
+          "id": "sdlcGovernance.platformStories",
+          "name": "Stories"
+        },
+        {
+          "id": "sdlcGovernance.agents",
+          "name": "Agents"
+        },
+        {
+          "id": "sdlcGovernance.workflows",
+          "name": "Workflows"
+        },
+        {
+          "type": "webview",
+          "id": "sdlcGovernance.runMonitor",
+          "name": "Run monitor"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "sdlcGovernance.runMonitor.focus",
+        "title": "SDLC Governance: Show Run Monitor",
+        "category": "SDLC Governance",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "sdlcGovernance.helloWorld",
+        "title": "SDLC Governance: Show Status",
+        "category": "SDLC Governance",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "sdlcGovernance.signIn",
+        "title": "SDLC Governance: Sign in to Azure",
+        "category": "SDLC Governance",
+        "icon": "$(sign-in)"
+      },
+      {
+        "command": "sdlcGovernance.signOut",
+        "title": "SDLC Governance: Sign out of Azure",
+        "category": "SDLC Governance",
+        "icon": "$(sign-out)"
+      },
+      {
+        "command": "sdlcGovernance.refreshFoundryProjects",
+        "title": "SDLC Governance: Refresh Foundry Projects",
+        "category": "SDLC Governance",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sdlcGovernance.discover",
+        "title": "SDLC Governance: Discover Agents",
+        "category": "SDLC Governance",
+        "icon": "$(search)"
+      },
+      {
+        "command": "sdlcGovernance.clearConnection",
+        "title": "SDLC Governance: Clear Stored Connection",
+        "category": "SDLC Governance",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "sdlcGovernance.governAndEvaluate",
+        "title": "SDLC Governance: Govern & Evaluate",
+        "category": "SDLC Governance",
+        "icon": "$(play)"
+      },
+      {
+        "command": "sdlcGovernance.scaffoldAdoGate",
+        "title": "SDLC Governance: Scaffold ADO Eval Gate",
+        "category": "SDLC Governance",
+        "icon": "$(file-add)"
+      },
+      {
+        "command": "sdlcGovernance.openEvaluationResults",
+        "title": "SDLC Governance: Open Evaluation Results",
+        "category": "SDLC Governance",
+        "icon": "$(graph)"
+      },
+      {
+        "command": "sdlcGovernance.runWorkflow",
+        "title": "SDLC Governance: Run Workflow",
+        "category": "SDLC Governance",
+        "icon": "$(run-all)"
+      },
+      {
+        "command": "sdlcGovernance.approveRun",
+        "title": "SDLC Governance: Approve Run",
+        "category": "SDLC Governance",
+        "icon": "$(check)"
+      },
+      {
+        "command": "sdlcGovernance.rejectRun",
+        "title": "SDLC Governance: Reject Run",
+        "category": "SDLC Governance",
+        "icon": "$(close)"
+      },
+      {
+        "command": "sdlcGovernance.cancelRun",
+        "title": "SDLC Governance: Cancel Run",
+        "category": "SDLC Governance",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "sdlcGovernance.openRunAudit",
+        "title": "SDLC Governance: Open Run Audit Log",
+        "category": "SDLC Governance",
+        "icon": "$(output)"
+      },
+      {
+        "command": "sdlcGovernance.openCanvas",
+        "title": "SDLC Governance: Open Workflow Canvas",
+        "category": "SDLC Governance",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "sdlcGovernance.runContinuousEval",
+        "title": "SDLC Governance: Run Continuous Evaluation",
+        "category": "SDLC Governance",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "sdlcGovernance.openContinuousEvalAlerts",
+        "title": "SDLC Governance: Open Continuous-Eval Alert Log",
+        "category": "SDLC Governance",
+        "icon": "$(warning)"
+      },
+      {
+        "command": "sdlcGovernance.refreshControlPlane",
+        "title": "SDLC Governance: Refresh Control Plane",
+        "category": "SDLC Governance",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sdlcGovernance.remediateAgent",
+        "title": "SDLC Governance: Remediate Agent",
+        "category": "SDLC Governance",
+        "icon": "$(wrench)"
+      },
+      {
+        "command": "sdlcGovernance.remediateNonCompliant",
+        "title": "SDLC Governance: Remediate All Non-Compliant Agents",
+        "category": "SDLC Governance",
+        "icon": "$(tools)"
+      },
+      {
+        "command": "sdlcGovernance.classifyContent",
+        "title": "SDLC Governance: Classify Content for PII/SIT",
+        "category": "SDLC Governance",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "sdlcGovernance.evaluateAgent",
+        "title": "SDLC Governance: Evaluate Agent",
+        "category": "SDLC Governance",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "sdlcGovernance.governAgent",
+        "title": "SDLC Governance: Govern Agent",
+        "category": "SDLC Governance",
+        "icon": "$(shield)"
+      },
+      {
+        "command": "sdlcGovernance.openWorkflowBuilder",
+        "title": "SDLC Governance: Open Workflow Builder",
+        "category": "SDLC Governance",
+        "icon": "$(type-hierarchy)"
+      },
+      {
+        "command": "sdlcGovernance.newWorkflow",
+        "title": "SDLC Governance: New Workflow",
+        "category": "SDLC Governance",
+        "icon": "$(add)"
+      },
+      {
+        "command": "sdlcGovernance.createBaseWorkflow",
+        "title": "SDLC Governance: Create Base Workflow from Discovered Agents",
+        "category": "SDLC Governance",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "sdlcGovernance.duplicateWorkflow",
+        "title": "SDLC Governance: Duplicate Workflow",
+        "category": "SDLC Governance",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "sdlcGovernance.deleteWorkflow",
+        "title": "SDLC Governance: Delete Workflow",
+        "category": "SDLC Governance",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "sdlcGovernance.renameWorkflow",
+        "title": "SDLC Governance: Rename Workflow",
+        "category": "SDLC Governance",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "sdlcGovernance.installDefaultHarnesses",
+        "title": "SDLC Governance: Install Claude Code and Codex",
+        "category": "SDLC Governance"
+      },
+      {
+        "command": "sdlcGovernance.platform.startInHarness",
+        "title": "SDLC Governance: Start Story in Harness",
+        "category": "SDLC Governance"
+      },
+      {
+        "command": "sdlcGovernance.startWorkflowChat",
+        "title": "SDLC Governance: Run Workflow in Chat (@sdlc)",
+        "category": "SDLC Governance",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "sdlcGovernance.platform.connect",
+        "title": "Connect to the SDLC Platform…",
+        "icon": "$(plug)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.disconnect",
+        "title": "Disconnect from the SDLC Platform",
+        "icon": "$(debug-disconnect)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.refresh",
+        "title": "Refresh Platform Stories",
+        "icon": "$(refresh)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.pickUp",
+        "title": "Pick Up Story",
+        "icon": "$(hand)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.moveStory",
+        "title": "Move Story…",
+        "icon": "$(arrow-right)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.openInBrowser",
+        "title": "Open in Browser",
+        "icon": "$(link-external)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.copyBranchName",
+        "title": "Copy Branch Name",
+        "icon": "$(git-branch)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.startWorkflow",
+        "title": "Start Workflow on Story…",
+        "icon": "$(play)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.openStory",
+        "title": "Open Story",
+        "icon": "$(notebook)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.openActiveStory",
+        "title": "Open Current Story",
+        "icon": "$(notebook)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.createBranch",
+        "title": "Create / Switch to Story Branch",
+        "icon": "$(git-branch)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.linkBranch",
+        "title": "Link This Branch to a Story…",
+        "icon": "$(link)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.addMemoryNote",
+        "title": "Add Note to Story Memory…",
+        "icon": "$(note)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.addSelectionToMemory",
+        "title": "Add Selection to Story Memory…",
+        "icon": "$(note)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.refreshAgentsView",
+        "title": "Refresh",
+        "category": "SDLC Governance",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sdlcGovernance.showEvaluations",
+        "title": "SDLC Governance: Show Evaluations"
+      },
+      {
+        "command": "sdlcGovernance.platform.refreshCatalog",
+        "title": "Refresh Project Agents & Workflows",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "sdlcGovernance.platform.openAgent",
+        "title": "Open Agent",
+        "icon": "$(book)"
+      },
+      {
+        "command": "sdlcGovernance.platform.enableAgent",
+        "title": "Enable for Project",
+        "icon": "$(pass)"
+      },
+      {
+        "command": "sdlcGovernance.platform.disableAgent",
+        "title": "Disable for Project",
+        "icon": "$(circle-slash)"
+      },
+      {
+        "command": "sdlcGovernance.platform.changeStepAgent",
+        "title": "Change Agent…",
+        "icon": "$(edit)"
+      },
+      {
+        "command": "sdlcGovernance.platform.openMemoryItem",
+        "title": "Open Memory Item",
+        "icon": "$(book)"
+      },
+      {
+        "command": "sdlcGovernance.platform.openProjectProfile",
+        "title": "Open Project Profile",
+        "category": "SDLC Platform",
+        "icon": "$(book)"
+      },
+      {
+        "command": "sdlcGovernance.platform.generateProjectProfile",
+        "title": "Generate Project Profile from Repository…",
+        "category": "SDLC Platform",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "sdlcGovernance.platform.diffProjectProfile",
+        "title": "Compare Profile Update",
+        "category": "SDLC Platform",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "sdlcGovernance.platform.acceptProjectProfile",
+        "title": "Accept Profile Update",
+        "category": "SDLC Platform",
+        "icon": "$(check)"
+      },
+      {
+        "command": "sdlcGovernance.platform.rejectProjectProfile",
+        "title": "Reject Profile Update…",
+        "category": "SDLC Platform",
+        "icon": "$(close)"
+      },
+      {
+        "command": "sdlcGovernance.platform.acceptMemory",
+        "title": "Accept into Project Memory",
+        "icon": "$(check)"
+      },
+      {
+        "command": "sdlcGovernance.platform.rejectMemory",
+        "title": "Reject Proposal…",
+        "icon": "$(close)"
+      },
+      {
+        "command": "sdlcGovernance.platform.archiveMemory",
+        "title": "Archive",
+        "icon": "$(archive)"
+      },
+      {
+        "command": "sdlcGovernance.platform.newStory",
+        "title": "New Story…",
+        "icon": "$(add)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.openChat",
+        "title": "Open Chat",
+        "icon": "$(comment-discussion)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.assignStory",
+        "title": "Assign…",
+        "icon": "$(person-add)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.addProjectMemory",
+        "title": "Add to Project Memory…",
+        "icon": "$(add)",
+        "category": "SDLC Platform"
+      },
+      {
+        "command": "sdlcGovernance.platform.pinMemory",
+        "title": "Pin for Every Agent",
+        "icon": "$(pin)"
+      },
+      {
+        "command": "sdlcGovernance.platform.unpinMemory",
+        "title": "Unpin",
+        "icon": "$(pinned)"
+      },
+      {
+        "command": "sdlcGovernance.platform.cloneRepository",
+        "title": "Clone Project Repository…",
+        "icon": "$(repo-clone)",
+        "category": "SDLC Platform"
+      }
+    ],
+    "viewsWelcome": [
+      {
+        "view": "sdlcGovernance.platformStories",
+        "contents": "See your projects and user stories from the SDLC platform — the same ones the web app shows — and pick stories up here.\n[Connect to the SDLC Platform](command:sdlcGovernance.platform.connect)",
+        "when": "!sdlcGovernance.platformConnected"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "sdlcGovernance.platform.openChat",
+          "when": "view == sdlcGovernance.platformStories && sdlcGovernance.platformConnected",
+          "group": "navigation@0"
+        },
+        {
+          "command": "sdlcGovernance.platform.newStory",
+          "when": "view == sdlcGovernance.platformStories && sdlcGovernance.platformConnected",
+          "group": "navigation@0"
+        },
+        {
+          "command": "sdlcGovernance.platform.refresh",
+          "when": "view == sdlcGovernance.platformStories && sdlcGovernance.platformConnected",
+          "group": "navigation@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openInBrowser",
+          "when": "view == sdlcGovernance.platformStories && sdlcGovernance.platformConnected",
+          "group": "navigation@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.disconnect",
+          "when": "view == sdlcGovernance.platformStories && sdlcGovernance.platformConnected",
+          "group": "z_connection"
+        },
+        {
+          "command": "sdlcGovernance.refreshAgentsView",
+          "when": "view == sdlcGovernance.agents",
+          "group": "navigation@1"
+        },
+        {
+          "command": "sdlcGovernance.governAndEvaluate",
+          "when": "view == sdlcGovernance.agents",
+          "group": "navigation@2"
+        },
+        {
+          "command": "sdlcGovernance.helloWorld",
+          "when": "view == sdlcGovernance.agents",
+          "group": "navigation@3"
+        },
+        {
+          "command": "sdlcGovernance.signIn",
+          "when": "view == sdlcGovernance.agents && !sdlcGovernance.signedIn",
+          "group": "1_account@1"
+        },
+        {
+          "command": "sdlcGovernance.signOut",
+          "when": "view == sdlcGovernance.agents && sdlcGovernance.signedIn",
+          "group": "1_account@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.connect",
+          "when": "view == sdlcGovernance.agents && !sdlcGovernance.platformConnected",
+          "group": "1_account@2"
+        },
+        {
+          "command": "sdlcGovernance.clearConnection",
+          "when": "view == sdlcGovernance.agents",
+          "group": "1_account@3"
+        },
+        {
+          "command": "sdlcGovernance.discover",
+          "when": "view == sdlcGovernance.agents",
+          "group": "2_agents@1"
+        },
+        {
+          "command": "sdlcGovernance.openEvaluationResults",
+          "when": "view == sdlcGovernance.agents",
+          "group": "2_agents@2"
+        },
+        {
+          "command": "sdlcGovernance.scaffoldAdoGate",
+          "when": "view == sdlcGovernance.agents",
+          "group": "2_agents@3"
+        },
+        {
+          "command": "sdlcGovernance.classifyContent",
+          "when": "view == sdlcGovernance.agents",
+          "group": "2_agents@4"
+        },
+        {
+          "command": "sdlcGovernance.remediateNonCompliant",
+          "when": "view == sdlcGovernance.agents",
+          "group": "3_compliance@1"
+        },
+        {
+          "command": "sdlcGovernance.runWorkflow",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "navigation@2"
+        },
+        {
+          "command": "sdlcGovernance.startWorkflowChat",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "navigation@3"
+        },
+        {
+          "command": "sdlcGovernance.openCanvas",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "1_build@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.refreshCatalog",
+          "when": "view == sdlcGovernance.workflows && sdlcGovernance.platformConnected",
+          "group": "1_build@3"
+        },
+        {
+          "command": "sdlcGovernance.openRunAudit",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "2_runs@1"
+        },
+        {
+          "command": "sdlcGovernance.runContinuousEval",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "2_runs@2"
+        },
+        {
+          "command": "sdlcGovernance.openContinuousEvalAlerts",
+          "when": "view == sdlcGovernance.workflows",
+          "group": "2_runs@3"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "sdlcGovernance.approveRun",
+          "when": "view == sdlcGovernance.workflows && viewItem == sdlcRun.awaitingApproval",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.rejectRun",
+          "when": "view == sdlcGovernance.workflows && viewItem == sdlcRun.awaitingApproval",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.cancelRun",
+          "when": "view == sdlcGovernance.workflows && (viewItem == sdlcRun.active || viewItem == sdlcRun.awaitingApproval)",
+          "group": "inline@3"
+        },
+        {
+          "command": "sdlcGovernance.openCanvas",
+          "when": "view == sdlcGovernance.workflows && viewItem =~ /^sdlcRun\\./",
+          "group": "navigation@1"
+        },
+        {
+          "command": "sdlcGovernance.remediateAgent",
+          "when": "view == sdlcGovernance.agents && viewItem == sdlcAgent.nonCompliant",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.evaluateAgent",
+          "when": "view == sdlcGovernance.agents && viewItem == discoveredAgent",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.governAgent",
+          "when": "view == sdlcGovernance.agents && viewItem == discoveredAgent",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.openWorkflowBuilder",
+          "when": "view == sdlcGovernance.workflows && viewItem == user-workflow",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.duplicateWorkflow",
+          "when": "view == sdlcGovernance.workflows && viewItem == user-workflow",
+          "group": "context@1"
+        },
+        {
+          "command": "sdlcGovernance.renameWorkflow",
+          "when": "view == sdlcGovernance.workflows && viewItem == user-workflow",
+          "group": "context@2"
+        },
+        {
+          "command": "sdlcGovernance.deleteWorkflow",
+          "when": "view == sdlcGovernance.workflows && viewItem == user-workflow",
+          "group": "context@3"
+        },
+        {
+          "command": "sdlcGovernance.platform.pickUp",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:pickup/",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.moveStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:move/",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.startWorkflow",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:mine/",
+          "group": "inline@3"
+        },
+        {
+          "command": "sdlcGovernance.platform.pickUp",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:pickup/",
+          "group": "1_work@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.moveStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:move/",
+          "group": "1_work@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.startWorkflow",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformStory/",
+          "group": "1_work@3"
+        },
+        {
+          "command": "sdlcGovernance.platform.copyBranchName",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformStory/",
+          "group": "2_copy@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openInBrowser",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platform(Story|Project)/",
+          "group": "3_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformStory/",
+          "group": "0_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.createBranch",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /:mine/",
+          "group": "1_work@4"
+        },
+        {
+          "command": "sdlcGovernance.platform.addMemoryNote",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformStory.*:memory/",
+          "group": "1_work@5"
+        },
+        {
+          "command": "sdlcGovernance.platform.assignStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformStory.*:assign/",
+          "group": "1_work@6"
+        },
+        {
+          "command": "sdlcGovernance.platform.newStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProject.*:create/",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.newStory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProject.*:create/",
+          "group": "1_work@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.cloneRepository",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProject.*:repo/",
+          "group": "1_work@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.addProjectMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem == platformMemoryRoot:add",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.addProjectMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem == platformMemoryRoot:add",
+          "group": "1_work@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.pinMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:pin(:|$)/",
+          "group": "2_manage@0"
+        },
+        {
+          "command": "sdlcGovernance.platform.unpinMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:unpin/",
+          "group": "2_manage@0"
+        },
+        {
+          "command": "sdlcGovernance.platform.refreshCatalog",
+          "when": "view == sdlcGovernance.agents && viewItem == section.project-agents",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.discover",
+          "when": "view == sdlcGovernance.agents && viewItem == section.workspace-agents",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.governAndEvaluate",
+          "when": "view == sdlcGovernance.agents && viewItem == section.evaluations",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.openEvaluationResults",
+          "when": "view == sdlcGovernance.agents && viewItem == section.evaluations",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.refreshFoundryProjects",
+          "when": "view == sdlcGovernance.agents && viewItem == section.foundry-projects",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.refreshControlPlane",
+          "when": "view == sdlcGovernance.agents && viewItem == section.compliance",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.remediateNonCompliant",
+          "when": "view == sdlcGovernance.agents && viewItem == section.compliance",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.refreshCatalog",
+          "when": "view == sdlcGovernance.workflows && viewItem == section.project-workflows",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.runWorkflow",
+          "when": "view == sdlcGovernance.workflows && viewItem == section.runs",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.openRunAudit",
+          "when": "view == sdlcGovernance.workflows && viewItem == section.runs",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.enableAgent",
+          "when": "view == sdlcGovernance.agents && viewItem == platformAgent:enable",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.disableAgent",
+          "when": "view == sdlcGovernance.agents && viewItem == platformAgent:disable",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openAgent",
+          "when": "view == sdlcGovernance.agents && viewItem =~ /^platformAgent/",
+          "group": "0_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openInBrowser",
+          "when": "view == sdlcGovernance.agents && viewItem =~ /^platform(Agent|Project)/",
+          "group": "3_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.changeStepAgent",
+          "when": "view == sdlcGovernance.workflows && viewItem == platformStep.agent:edit",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.changeStepAgent",
+          "when": "view == sdlcGovernance.workflows && viewItem == platformStep.agent:edit",
+          "group": "1_edit@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openInBrowser",
+          "when": "view == sdlcGovernance.workflows && viewItem =~ /^platform(Workflow|Step|Project|Run)/",
+          "group": "3_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openStory",
+          "when": "view == sdlcGovernance.workflows && viewItem == platformRun:story",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openStory",
+          "when": "view == sdlcGovernance.workflows && viewItem == platformRun:story",
+          "group": "0_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.refreshCatalog",
+          "when": "view == sdlcGovernance.workflows && viewItem == section.project-runs",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:decide/",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.rejectMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:decide/",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:decide/",
+          "group": "1_decide@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.rejectMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:decide/",
+          "group": "1_decide@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.archiveMemory",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory.*:archive/",
+          "group": "2_manage@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.openInBrowser",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformMemory/",
+          "group": "3_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.generateProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:generate/",
+          "group": "inline@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:decide/",
+          "group": "inline@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.openProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:open/",
+          "group": "0_open@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.diffProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:decide/",
+          "group": "0_open@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:decide/",
+          "group": "1_decide@1"
+        },
+        {
+          "command": "sdlcGovernance.platform.rejectProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:decide/",
+          "group": "1_decide@2"
+        },
+        {
+          "command": "sdlcGovernance.platform.generateProjectProfile",
+          "when": "view == sdlcGovernance.platformStories && viewItem =~ /^platformProfile.*:generate/",
+          "group": "2_manage@1"
+        }
+      ],
+      "explorer/context": [
+        {
+          "command": "sdlcGovernance.openCanvas",
+          "when": "resourceExtname == .json && resourcePath =~ /[\\\\/]\\.sdlc[\\\\/]workflows[\\\\/]/",
+          "group": "navigation@9"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "sdlcGovernance.platform.openChat",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.startInHarness",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.pickUp",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.moveStory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.copyBranchName",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.startWorkflow",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.openStory",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.openActiveStory",
+          "when": "sdlcGovernance.platform.hasActiveStory"
+        },
+        {
+          "command": "sdlcGovernance.platform.createBranch",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.linkBranch",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.addMemoryNote",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.addSelectionToMemory",
+          "when": "sdlcGovernance.platformConnected && editorIsOpen"
+        },
+        {
+          "command": "sdlcGovernance.platform.openAgent",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.enableAgent",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.disableAgent",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.changeStepAgent",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.openMemoryItem",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptMemory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.rejectMemory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.archiveMemory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.openProjectProfile",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.generateProjectProfile",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.diffProjectProfile",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.acceptProjectProfile",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.rejectProjectProfile",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.newStory",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.addProjectMemory",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.cloneRepository",
+          "when": "sdlcGovernance.platformConnected"
+        },
+        {
+          "command": "sdlcGovernance.platform.assignStory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.pinMemory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.platform.unpinMemory",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.newWorkflow",
+          "when": "false"
+        },
+        {
+          "command": "sdlcGovernance.createBaseWorkflow",
+          "when": "false"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "sdlcGovernance.platform.addSelectionToMemory",
+          "when": "sdlcGovernance.platformConnected && sdlcGovernance.platform.hasActiveStory && editorHasSelection",
+          "group": "9_sdlc@1"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "SDLC Agent Governance",
+      "properties": {
+        "sdlcGovernance.eval.judgeDeployment": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "Azure OpenAI deployment name used as the judge model for AI-assisted evaluators."
+        },
+        "sdlcGovernance.eval.transport": {
+          "type": "string",
+          "enum": [
+            "sdk",
+            "fetch"
+          ],
+          "default": "sdk",
+          "description": "How to call the Foundry evals API: the @azure/ai-projects SDK, or raw fetch (fallback)."
+        },
+        "sdlcGovernance.eval.pollIntervalMs": {
+          "type": "number",
+          "default": 5000,
+          "description": "Polling interval (ms) while waiting for an evaluation run to complete."
+        },
+        "sdlcGovernance.eval.pollTimeoutMs": {
+          "type": "number",
+          "default": 600000,
+          "description": "Maximum time (ms) to wait for an evaluation run before timing out."
+        },
+        "sdlcGovernance.eval.failClosedOnError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Treat an errored or missing evaluator result as a gate failure."
+        },
+        "sdlcGovernance.eval.customEvaluators": {
+          "type": "boolean",
+          "default": false,
+          "description": "Register and run the preview code-based and prompt-based custom evaluators."
+        },
+        "sdlcGovernance.eval.sampling": {
+          "type": "object",
+          "default": {
+            "strategy": "ratio",
+            "ratio": 0.25,
+            "minRows": 5
+          },
+          "description": "Dataset sampling to bound evaluation cost. strategy: none | ratio | headN."
+        },
+        "sdlcGovernance.gate.defaultThresholds": {
+          "type": "object",
+          "default": {},
+          "description": "Fallback per-evaluator thresholds applied when a step omits one."
+        },
+        "sdlcGovernance.gate.evaluator": {
+          "type": "string",
+          "enum": [
+            "auto",
+            "foundry",
+            "stub"
+          ],
+          "enumDescriptions": [
+            "Enforce gates with Foundry evaluators when a project is configured (gate.projectEndpoint) and you are signed in; otherwise fall back to the offline stub and say so.",
+            "Always evaluate with Foundry. Asks once for a project if none is configured. If an evaluation cannot run, the step is blocked (eval.failClosedOnError) or passed (fail-open).",
+            "Always use the offline stub, which only checks the step output for the word \"fail\". For demos and offline work; it is NOT a real governance check."
+          ],
+          "default": "auto",
+          "description": "How workflow gates (the check after each agent step) decide pass/block."
+        },
+        "sdlcGovernance.gate.projectEndpoint": {
+          "type": "string",
+          "default": "",
+          "description": "Foundry project endpoint used to evaluate workflow gates, e.g. https://<account>.services.ai.azure.com/api/projects/<project>. In 'foundry' mode it is filled in from a project picker the first time a gate runs."
+        },
+        "sdlcGovernance.telemetry.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Emit OpenTelemetry GenAI spans for evaluation runs to Application Insights."
+        },
+        "sdlcGovernance.telemetry.recordContent": {
+          "type": "boolean",
+          "default": false,
+          "description": "Include prompt/completion content on telemetry spans. OFF by default (PII)."
+        },
+        "sdlcGovernance.telemetry.appInsightsConnectionString": {
+          "type": "string",
+          "default": "",
+          "description": "Application Insights connection string. Prefer storing this as a secret via the extension."
+        },
+        "sdlcGovernance.audit.logAnalytics.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Mirror audit records to a Log Analytics workspace via the Logs Ingestion API."
+        },
+        "sdlcGovernance.audit.logAnalytics.dcrEndpoint": {
+          "type": "string",
+          "default": "",
+          "description": "Data Collection Rule ingestion endpoint (https://<name>.<region>.ingest.monitor.azure.com)."
+        },
+        "sdlcGovernance.audit.logAnalytics.dcrImmutableId": {
+          "type": "string",
+          "default": "",
+          "description": "Immutable id of the Data Collection Rule (dcr-...)."
+        },
+        "sdlcGovernance.audit.logAnalytics.streamName": {
+          "type": "string",
+          "default": "",
+          "description": "Custom table stream name, e.g. Custom-SdlcEvalAudit_CL."
+        },
+        "sdlcGovernance.continuousEval.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Phase 5D: periodically sample recent governed runs and alert on quality regressions / eval-spend overruns."
+        },
+        "sdlcGovernance.continuousEval.sampleRate": {
+          "type": "number",
+          "default": 0.25,
+          "description": "Fraction (0,1] of recent runs to re-score each cycle. Bounds cost — never every run."
+        },
+        "sdlcGovernance.continuousEval.minSamples": {
+          "type": "number",
+          "default": 5,
+          "description": "Floor on the number of runs sampled per cycle (capped at the population size)."
+        },
+        "sdlcGovernance.continuousEval.alertThreshold": {
+          "type": "number",
+          "default": 0.7,
+          "description": "A sampled evaluator score below this raises a quality-regression alert."
+        },
+        "sdlcGovernance.continuousEval.evalSpendBudgetRatio": {
+          "type": "number",
+          "default": 0.15,
+          "description": "Alert when evaluation tokens exceed this fraction of model-inference tokens (~0.10–0.15)."
+        },
+        "sdlcGovernance.purview.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Phase 5C (PREVIEW): classify run content via Microsoft Purview DSPM for AI. Requires Foundry Account Owner. When off, a local heuristic PII/SIT detector is used."
+        },
+        "sdlcGovernance.purview.endpoint": {
+          "type": "string",
+          "default": "",
+          "description": "Purview DSPM-for-AI classification endpoint (preview). Falls back to the local heuristic when unset or unreachable."
+        },
+        "sdlcGovernance.runtime.engine": {
+          "type": "string",
+          "enum": [
+            "interpreter",
+            "langgraph"
+          ],
+          "enumDescriptions": [
+            "The hand-rolled FIFO interpreter (MockWorkflowRuntime). In-memory only: a paused run does not survive a window reload.",
+            "A real @langchain/langgraph StateGraph engine with durable interrupt()-based human-in-the-loop approvals, real conditional-edge routing, live per-step progress, and runs that survive a window reload — default."
+          ],
+          "default": "langgraph",
+          "description": "Workflow orchestration engine used to run workflows. Changing it needs a window reload."
+        },
+        "sdlcGovernance.dispatch.mode": {
+          "type": "string",
+          "enum": [
+            "lm",
+            "mock"
+          ],
+          "default": "lm",
+          "description": "How workflow agents run: 'lm' calls a real language model via the VS Code LM API (GitHub Copilot); 'mock' uses the deterministic stub (offline / tests)."
+        },
+        "sdlcGovernance.dispatch.maxToolIterations": {
+          "type": "number",
+          "default": 12,
+          "description": "Maximum number of tool-call rounds an agent may take per step when editing the codebase via the LM API. Bounds runaway loops."
+        },
+        "sdlcGovernance.azureDevOps.organization": {
+          "type": "string",
+          "default": "",
+          "description": "Default Azure DevOps organization (the dev.azure.com/<org> segment) for issue-trigger work-item lookups. Overridden per-workflow on the trigger node."
+        },
+        "sdlcGovernance.azureDevOps.project": {
+          "type": "string",
+          "default": "",
+          "description": "Default Azure DevOps project for issue-trigger work-item lookups. Overridden per-workflow on the trigger node."
+        },
+        "sdlcGovernance.azureDevOps.allowAgentWrites": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow workflow agents to WRITE to Azure Boards (update work-item fields, post comments) via the update_work_item / add_work_item_comment tools. Even when enabled, an agent is only offered write tools if its manifest declares them. Read tools (list/get work items) are always available. Off by default — board mutations stay manual."
+        },
+        "sdlcGovernance.azureDevOps.allowAgentPRs": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow workflow agents to commit, push a branch, and open an Azure DevOps Pull Request via the git_commit_and_push / create_pull_request tools. Even when enabled, an agent is only offered these tools if its manifest declares them. This is a separate, higher-impact switch from allowAgentWrites (board writes) since it pushes code to a shared remote and opens a visible PR. Off by default."
+        },
+        "sdlcGovernance.azureDevOps.repository": {
+          "type": "string",
+          "default": "",
+          "description": "Azure DevOps Git repository name to target for PR creation. Auto-detected from the workspace's git 'origin' remote URL when unset; set this to override auto-detection or when no remote is configured."
+        },
+        "sdlcGovernance.azureDevOps.targetBranch": {
+          "type": "string",
+          "default": "main",
+          "description": "Base branch for Pull Requests opened by workflow agents (git_commit_and_push always pushes to a NEW branch, never to this one directly)."
+        },
+        "sdlcGovernance.azureDevOps.createDraftPRs": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open Pull Requests created by workflow agents as drafts. Recommended: keeps agent-authored PRs out of merge/notification flows until a human marks them ready."
+        },
+        "sdlcGovernance.aiAssistant": {
+          "type": "string",
+          "enum": [
+            "copilot",
+            "claude-code",
+            "codex"
+          ],
+          "enumDescriptions": [
+            "Open GitHub Copilot Chat with the @sdlc participant (default)",
+            "Open the Claude Code extension with the Azure Boards work item and workflow agents pre-seeded as one prompt; installs the extension automatically if it's missing",
+            "Open the Codex extension (installing it automatically if needed) with the seeded workflow prompt copied to the clipboard"
+          ],
+          "default": "copilot",
+          "description": "AI assistant to open when clicking the Start button in the workflow builder."
+        },
+        "sdlcGovernance.harnesses.autoInstall": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Install **Claude Code** and **Codex** with this extension when they are missing (once per extension version). They come as an extension pack; turn this off to manage them yourself. Each needs its own sign-in before it can run work."
+        },
+        "sdlcGovernance.harnesses.custom": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Extra coding harnesses to offer when starting a story (besides Copilot, Claude Code, Codex, Roo Code, Kilo Code, Continue, Gemini Code Assist, Amazon Q and Cline). Each runs with file checkpoints: the prompt is copied for you to paste. Only harnesses whose extension is installed are offered.",
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "extensionId"
+            ],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z0-9][a-z0-9-]{0,39}$",
+                "description": "Lowercase id, e.g. my-harness"
+              },
+              "label": {
+                "type": "string"
+              },
+              "extensionId": {
+                "type": "string",
+                "description": "The VS Code extension id that provides it, e.g. publisher.name"
+              },
+              "openCommand": {
+                "type": "string",
+                "description": "Optional command that opens its chat"
+              }
+            }
+          }
+        },
+        "sdlcGovernance.platform.externalRunTimeoutMinutes": {
+          "type": "number",
+          "default": 240,
+          "minimum": 5,
+          "description": "How long a workflow run in a harness (Copilot, Claude Code, Codex…) may take before it is stopped. Time waiting for approvals is not counted."
+        },
+        "sdlcGovernance.platform.apiUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "URL of the SDLC platform backend API (e.g. `http://127.0.0.1:4000`). Empty keeps the extension local-only. Set it with **SDLC Platform: Connect to the SDLC Platform…**.",
+          "order": 900
+        },
+        "sdlcGovernance.platform.webUrl": {
+          "type": "string",
+          "default": "http://localhost:3000",
+          "markdownDescription": "URL of the SDLC platform web app, used by **Open in Browser**.",
+          "order": 901
+        },
+        "sdlcGovernance.platform.devUser": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Local development only: the seeded user to act as (e.g. `dev1@sdlc.local`). Production uses Microsoft Entra ID sign-in instead.",
+          "order": 902
+        },
+        "sdlcGovernance.platform.trackCodeActivity": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "While a branch linked to a platform story is checked out (`story/PAY-2-…`, or linked with **Link This Branch to a Story…**), report your uncommitted changes and commits on it to the SDLC platform, so your team sees the work in the web app and in VS Code. Only for stories assigned to you.",
+          "order": 903
+        },
+        "sdlcGovernance.platform.shareDiffs": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Include the diff text with reported changes and commits. Off: only file names and line counts are shared.",
+          "order": 904
+        },
+        "sdlcGovernance.platform.commitEachStep": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "After each agent step of a workflow run, commit the files that step changed to the run's branch. Commits stay local — nothing is pushed.",
+          "order": 905
+        },
+        "sdlcGovernance.platform.runBranchBase": {
+          "type": "string",
+          "enum": [
+            "default",
+            "current"
+          ],
+          "enumDescriptions": [
+            "Cut a new run branch from the repository's default branch (origin/HEAD, main or master).",
+            "Cut a new run branch from whatever is checked out."
+          ],
+          "default": "default",
+          "markdownDescription": "What a new story or quick-fix run branch starts from.",
+          "order": 906
+        },
+        "sdlcGovernance.platform.diffExclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/.env",
+            "**/.env.*",
+            "**/*.pem",
+            "**/*.key",
+            "**/*.pfx",
+            "**/*.p12",
+            "**/*.keystore",
+            "**/secrets.*",
+            "**/id_rsa*"
+          ],
+          "markdownDescription": "Glob patterns for files whose content is never sent to the platform (secrets). Their names and line counts are still reported.",
+          "order": 905
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build:packages": "tsc -b ../../packages/core ../../packages/contracts",
+    "prebuild": "npm run build:packages",
+    "build": "node esbuild.js --production",
+    "prewatch": "npm run build:packages",
+    "watch": "node esbuild.js --watch",
+    "dev": "npm run build && node scripts/dev.js",
+    "pretypecheck": "npm run build:packages",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.webview.json",
+    "lint": "eslint src",
+    "precompile-tests": "npm run build:packages",
+    "compile-tests": "tsc -p tsconfig.test.json",
+    "pretest": "npm run build && npm run compile-tests",
+    "test": "node out/test/runTest.js",
+    "test:open": "npm run build && npm run compile-tests && node out/test/runTest.js --keep-open",
+    "package": "vsce package --no-dependencies --baseContentUrl https://dev.azure.com/synergech/Synergech%20Product%20Hub/_git/SDLC-extension-tool --baseImagesUrl https://dev.azure.com/synergech/Synergech%20Product%20Hub/_git/SDLC-extension-tool"
+  },
+  "dependencies": {
+    "@ai-sdk/react": "^4.0.177",
+    "@dagrejs/dagre": "^1.1.4",
+    "@langchain/core": "^1.2.3",
+    "@langchain/langgraph": "^1.4.8",
+    "@langchain/langgraph-checkpoint": "^1.1.3",
+    "@sdlc/contracts": "*",
+    "@sdlc/core": "*",
+    "@xyflow/react": "^12.3.5",
+    "ai": "^7.0.173",
+    "js-yaml": "^4.2.0",
+    "markdown-it": "^14.3.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/js-yaml": "^4.0.9",
+    "@types/markdown-it": "^14.2.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^20.14.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@types/vscode": "^1.95.0",
+    "@typescript-eslint/eslint-plugin": "^7.13.0",
+    "@typescript-eslint/parser": "^7.13.0",
+    "@vscode/test-cli": "^0.0.10",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^2.27.0",
+    "esbuild": "^0.21.5",
+    "eslint": "^8.57.0",
+    "mocha": "^10.8.2",
+    "typescript": "^5.4.5"
+  },
+  "optionalDependencies": {
+    "@azure/ai-projects": "^2.2.0",
+    "@azure/identity": "^4.2.1",
+    "@azure/monitor-opentelemetry-exporter": "^1.0.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-base": "^1.30.0",
+    "@opentelemetry/sdk-trace-node": "^1.30.0",
+    "openai": "^4.67.0"
+  }
+}

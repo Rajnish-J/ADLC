@@ -1,0 +1,1 @@
+ALTER TYPE "public"."memory_source" ADD VALUE 'profile';

@@ -1,0 +1,1 @@
+ALTER TABLE "project_boards" ADD COLUMN "area_path" text;

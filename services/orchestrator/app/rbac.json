@@ -1,0 +1,86 @@
+{
+  "permissions": [
+    "project.view",
+    "project.create",
+    "project.update",
+    "project.manage_members",
+    "story.create",
+    "story.edit",
+    "story.assign",
+    "story.pickup",
+    "story.transition",
+    "agent.configure",
+    "workflow.edit",
+    "audit.view",
+    "memory.write",
+    "memory.curate",
+    "work.report",
+    "code.edit",
+    "repo.manage",
+    "org.manage"
+  ],
+  "rolePermissions": {
+    "owner": [
+      "project.view",
+      "project.update",
+      "project.manage_members",
+      "story.create",
+      "story.edit",
+      "story.assign",
+      "story.pickup",
+      "story.transition",
+      "agent.configure",
+      "workflow.edit",
+      "audit.view",
+      "memory.write",
+      "memory.curate",
+      "work.report",
+      "code.edit",
+      "repo.manage"
+    ],
+    "lead": [
+      "project.view",
+      "project.manage_members",
+      "story.create",
+      "story.edit",
+      "story.assign",
+      "story.pickup",
+      "story.transition",
+      "agent.configure",
+      "workflow.edit",
+      "audit.view",
+      "memory.write",
+      "memory.curate",
+      "work.report",
+      "code.edit"
+    ],
+    "developer": [
+      "project.view",
+      "story.edit",
+      "story.pickup",
+      "story.transition",
+      "memory.write",
+      "work.report",
+      "code.edit"
+    ],
+    "viewer": [
+      "project.view"
+    ]
+  },
+  "ownOnlyForDeveloper": [
+    "story.edit",
+    "story.transition",
+    "memory.write",
+    "work.report"
+  ],
+  "orgOnly": [
+    "project.create",
+    "org.manage"
+  ],
+  "projectRoleRank": {
+    "viewer": 0,
+    "developer": 1,
+    "lead": 2,
+    "owner": 3
+  }
+}

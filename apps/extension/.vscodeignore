@@ -1,0 +1,24 @@
+# Allowlist: exclude everything, then re-include only what the VSIX needs to ship.
+# This keeps source (src/, orka/, spike/), the .claude agent tree, scripts, CI config,
+# and internal docs out of the packaged extension.
+**
+
+# Runtime bundle produced by `npm run build` (esbuild)
+!dist/extension.js
+!dist/webview/main.js
+!dist/webview/main.css
+!dist/webview/story.js
+!dist/webview/story.css
+
+# Built-in agents the default workflow binds by slug (copied from packages/core/agents by esbuild.js)
+!dist/agents/*.md
+
+# Activity-bar icon and other static assets
+!media/**
+
+# Required metadata + marketplace/readme display
+!package.json
+!README.md
+
+# Never ship source maps even if matched above
+**/*.map
